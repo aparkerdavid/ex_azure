@@ -8,7 +8,7 @@ defmodule ExAzure.Server do
   def init(config \\ []) do
     config = ExAzure.defaults(config)
 
-    account    = to_charlist(config[:account])
+    account = to_charlist(config[:account])
     access_key = to_charlist(config[:access_key])
 
     {:ok, client} = :erlazure.start(account, access_key)
@@ -28,5 +28,4 @@ defmodule ExAzure.Server do
   def handle_call({_action, _args} = request, from, state) do
     {:ok, :reply, {request, from, state}}
   end
-
 end

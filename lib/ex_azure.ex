@@ -4,12 +4,12 @@ defmodule ExAzure do
 
   alias ExAzure.{
     Server,
-    Utils,
+    Utils
   }
 
   def defaults(config) do
     config
-    |> Dict.put_new(:account   , Application.get_env(:ex_azure, :account   ))
+    |> Dict.put_new(:account, Application.get_env(:ex_azure, :account))
     |> Dict.put_new(:access_key, Application.get_env(:ex_azure, :access_key))
   end
 
@@ -22,36 +22,38 @@ defmodule ExAzure do
   end
 
   @spec request(atom) :: {:ok, term} | {:error, term}
-  @spec request(atom, Keyword.t) ::  {:ok, term} | {:error, term}
-  @spec request(atom, Keyword.t, Keyword.t) ::  {:ok, term} | {:error, term}
+  @spec request(atom, Keyword.t()) :: {:ok, term} | {:error, term}
+  @spec request(atom, Keyword.t(), Keyword.t()) :: {:ok, term} | {:error, term}
   def request(action, args \\ [], opts \\ []) do
     try do
       {:ok, do_request(action, args, opts)}
-    rescue error ->
-      {:error, error}
+    rescue
+      error ->
+        {:error, error}
     end
   end
 
   @spec request!(atom) :: {:ok, term} | {:error, term}
-  @spec request!(atom, Keyword.t) ::  {:ok, term} | {:error, term}
-  @spec request!(atom, Keyword.t, Keyword.t) ::  {:ok, term} | {:error, term}
+  @spec request!(atom, Keyword.t()) :: {:ok, term} | {:error, term}
+  @spec request!(atom, Keyword.t(), Keyword.t()) :: {:ok, term} | {:error, term}
   def request!(action, args \\ [], opts \\ []) do
     do_request(action, args, opts)
   end
 
   defp do_request(action, args, opts) when is_atom(action) do
-    args = args |> Utils.normalize_to_charlist
+    args = args |> Utils.normalize_to_charlist()
 
     client = opts |> Dict.get(:client, client())
+
     apply(:erlazure, action, [client] ++ args)
     |> parse_response
   end
 
   defp parse_response({:error, _} = response), do: response
-  defp parse_response({:ok   , _} = response), do: response
+  defp parse_response({:ok, _} = response), do: response
 
   defp parse_response({body, headers}) do
-    %{ body: body, headers: headers }
+    %{body: body, headers: headers}
   end
 
   @doc false
@@ -61,7 +63,7 @@ defmodule ExAzure do
     # Define workers and child supervisors to be supervised
     children = [
       # supervisor(:erlazure_sup, []),
-      supervisor(ExAzure.Server, []),
+      supervisor(ExAzure.Server, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

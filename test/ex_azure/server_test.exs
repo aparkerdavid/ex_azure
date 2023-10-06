@@ -7,7 +7,7 @@ defmodule ExAzure.ServerTest do
     config = GenServer.call(@module, :config)
 
     assert config[:access_key] == Application.get_env(:ex_azure, :access_key)
-    assert config[:account]    == Application.get_env(:ex_azure, :account)
+    assert config[:account] == Application.get_env(:ex_azure, :account)
   end
 
   test "get client pid from state" do

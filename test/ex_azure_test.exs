@@ -41,5 +41,4 @@ defmodule ExAzureTest do
       end
     end
   end
-
 end
